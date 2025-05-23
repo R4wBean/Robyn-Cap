@@ -1,255 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>City Messages</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f1f1f1;
-      padding: 20px;
-      transition: background-color 0.3s, color 0.3s;
-    }
-
-    textarea {
-      width: 100%;
-      height: 200px;
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      resize: vertical;
-    }
-
-    button.generate-btn {
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-bottom: 20px;
-    }
-
-    .output {
-      background-color: #fff;
-      padding: 12px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      max-width: 100%;
-    }
-
-    .city-title {
-      text-align: center;
-      font-weight: bold;
-      text-transform: uppercase;
-      font-size: 18px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .line-container {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      margin-bottom: 8px;
-      border: 1px solid #ddd;
-      padding: 6px 8px;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    .line-text {
-      flex: 1;
-      word-break: break-word;
-    }
-
-    .copy-btn {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      padding: 4px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      margin-right: 10px;
-      white-space: nowrap;
-    }
-
-    .copy-btn:hover {
-      background-color: #218838;
-    }
-
-    .message-container {
-      transition: max-height 0.3s ease;
-      overflow: hidden;
-      max-height: 1000px;
-    }
-
-    .message-container.collapsed {
-      max-height: 0;
-      padding: 0;
-      margin: 0;
-    }
-
-    /* Dark Mode */
-    .dark-mode {
-      background-color: #121212;
-      color: #f1f1f1;
-    }
-
-    .dark-mode textarea {
-      background-color: #1e1e1e;
-      color: #f1f1f1;
-      border-color: #555;
-    }
-
-    .dark-mode .output {
-      background-color: #1e1e1e;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
-    }
-
-    .dark-mode .line-container {
-      border-color: #444;
-    }
-
-    .dark-mode .copy-btn {
-      background-color: #4caf50;
-    }
-
-    .dark-mode .copy-btn:hover {
-      background-color: #388e3c;
-    }
-
-    .dark-mode .generate-btn {
-      background-color: #555;
-    }
-
-    .dark-mode .city-title {
-      color: #f1f1f1;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Custom Sentences with City Replacement</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    flex-direction: column;
+    padding: 20px;
+  }
+  input, textarea, select, button {
+  width: 100%;
+  max-width: 600px;
+  box-sizing: border-box;
+  margin: 8px 0;
+}
+  .box {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 600px;
+    margin-bottom: 20px;
+  }
+  #input-box {
+    display: none;
+  }
+  select, input[type="submit"], input[type="text"], textarea {
+    padding: 10px;
+    margin: 10px 0;
+    width: 90%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+  input[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  input[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  .message {
+    margin-top: 15px;
+    font-weight: 600;
+  }
+  #inputFields input {
+    margin-bottom: 8px;
+  }
+  #input-box h2 {
+    margin-bottom: 20px;
+  }
+  #outputs {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    max-width: 600px;
+    white-space: pre-wrap;
+    text-align: left;
+    overflow-x: auto;
+  }
+</style>
 </head>
 <body>
 
-  <h2>Emma loves Robyn</h2>
+<div id="login-box" class="box">
+  <h2>Login</h2>
+  <select id="userDropdown">
+    <option value="">-- Select your name --</option>
+    <option>Robyn</option>
+    <option>Ryu</option>
+    <option>Cleigh</option>
+    <option>Red</option>
+    <option>Sai</option>
+    <option>Kyle</option>
+    <option>Danielle</option>
+    <option>Dex</option>
+    <option>Cyril</option>
+    <option>Glenneth</option>
+    <option>JV</option>
+    <option>Kristian</option>
+    <option>Eugene</option>
+    <option>Daisy</option>
+    <option>Ejhay</option>
+  </select>
+  <input type="submit" value="Log In" onclick="login()" />
+  <div id="login-message" class="message"></div>
+</div>
 
-  <!-- Dark Mode Toggle -->
-  <div style="margin-bottom: 15px; text-align: right;">
-    <button id="toggleDarkMode" class="generate-btn" style="background-color: #333;">🌙 Dark Mode</button>
-  </div>
+<div id="input-box" class="box">
+  <h2 id="welcome-user">Welcome!</h2>
+  <p>Enter your 10 Captions.</p>
+  <div id="inputFields"></div>
+  <input type="submit" value="Submit" onclick="submitInputs()" />
+  <div id="submit-message" class="message"></div>
+</div>
 
-  <!-- Input Textarea -->
-  <textarea id="inputText" placeholder="Paste city message blocks here..." autofocus></textarea>
-  <br />
-  <button class="generate-btn" onclick="generateOutput()">Generate</button>
+<div id="outputs" style="display:none;"></div>
 
-  <div id="outputSections"></div>
+<script>
+  // User cities mapping (lowercase keys)
+ const userCities = {
+  robyn: [
+    "geelong", "yokohama", "brisbane", "townsville", "osaka",
+    "seoul", "wellington", "christchurch", "amsterdam", "tauranga",
+    "busan", "nice", "lille", "turin", "lausanne",
+    "melbourne", "bremen", "antwerp", "odense", "rennes",
+    "bordeaux", "zurich", "brussels", "lyon", "toulouse",
+    "malmö", "genoa", "sydney", "perth", "gothenburg",
+    "münster", "alicante", "graz", "cork", "porto",
+    "nuremberg", "bielefeld", "cologne", "nantes"
+  ],
+  sai: [
+    "strasbourg", "dresden", "aarhus", "geneva", "hannover",
+    "barcelona", "leipzig", "palma de mallorca", "bonn", "luxembourg",
+    "basel", "canada", "australia", "new zealand", "japan",
+    "korea", "scotland", "ireland", "england", "wales",
+    "northern ireland", "the netherlands", "norway", "france", "portugal",
+    "finland", "spain", "denmark", "sweden", "germany",
+    "italy", "austria", "belgium", "switzerland"
+  ],
+  ryu: ["seoul", "osaka", "bangkok"],
+ cleigh: [
+  "boston", "san francisco", "virginia beach", "atlanta", "houston", "dallas",
+  "des moines", "bridgeport", "cincinnati", "berkeley", "colorado springs", "pasadena",
+  "brooklyn", "kansas city", "sacramento", "oakland", "nashville", "boulder",
+  "long beach", "las vegas", "tampa", "washington", "durham", "phoenix",
+  "charlotte", "new orleans", "oklahoma city", "toronto", "pittsburgh", "sioux falls",
+  "san jose", "richmond", "baltimore", "wichita", "buffalo", "santa fe",
+  "jacksonville", "raleigh", "los angeles", "ann arbor"
+],
+  red: [
+  "massachusetts", "california", "texas", "florida", "pennsylvania", "minnesota",
+  "kentucky", "colorado", "kansas", "illinois", "virginia", "georgia",
+  "tennessee", "wisconsin", "ohio", "delaware", "iowa", "missouri",
+  "ontario", "maryland", "south dakota", "connecticut", "indiana",
+  "new jersey", "nebraska", "north dakota", "oregon", "new mexico",
+  "oklahoma", "arizona", "utah", "louisiana", "nevada", "district columbia",
+  "british columbia", "manitoba", "nova scotia", "saskatchewan", "michigan",
+  "alberta"
+]
+,
+  kyle: [
+  "rotterdam", "oshawa", "paris", "vaughan", "burnaby", "copenhagen",
+  "mississauga", "regina", "burlington", "greater sudbury", "coquitlam",
+  "kelowna", "munich", "milan", "stockholm", "düsseldorf", "oslo", "dublin",
+  "lisbon", "dortmund", "calgary", "edmonton", "markham", "halifax", "madrid",
+  "quebec city", "hamilton", "saguenay", "surrey", "frankfurt", "abbotsford",
+  "rome", "vienna", "winnipeg", "hamburg", "stuttgart", "windsor", "berlin",
+  "ottawa", "helsinki"
+]
+,
+  danielle: [
+  "texas", "florida", "pennsylvania", "colorado", "illinois", "georgia", "tennessee",
+  "delaware", "iowa", "missouri", "maryland", "connecticut", "oregon", "oklahoma",
+  "arizona", "utah", "nevada", "manitoba", "nova scotia", "alberta", "north dakota",
+  "ohio", "indiana", "nebraska", "louisiana", "new mexico", "saskatchewan",
+  "massachusetts", "virginia", "wisconsin", "ontario", "south dakota", "british columbia",
+  "kansas", "minnesota", "michigan", "kentucky", "california", "new jersey", "district columbia"
+],
+  dex: ["moscow", "dubai", "cairo"],
+  cyril: [
+  "belfast", "southampton", "milton keynes", "northampton", "vancouver",
+  "barrie", "derby", "liverpool", "reading", "newcastle upon tyne",
+  "ipswich", "swindon", "brighton and hove", "coventry", "aberdeen",
+  "sunderland", "cambridge", "leicester", "bristol", "london", "norwich",
+  "brampton", "wolverhampton", "glasgow", "leeds", "sheffield", "swansea",
+  "plymouth", "portsmouth", "bolton", "oxford", "peterborough", "nottingham",
+  "birmingham", "cardiff", "stoke-on-trent", "bradford", "edinburgh",
+  "manchester", "montreal"
+]
+,
+  glenneth: [
+  "brighton and hove", "glasgow", "manchester", "bristol", "london",
+  "edinburgh", "leeds", "sheffield", "nottingham", "coventry",
+  "belfast", "swansea", "aberdeen", "bradford", "plymouth",
+  "southampton", "milton keynes", "portsmouth", "birmingham",
+  "norwich", "northampton", "wolverhampton", "bolton", "sunderland",
+  "oxford", "peterborough", "vancouver", "cardiff", "cambridge",
+  "toronto", "montreal", "barrie", "derby", "stoke-on-trent",
+  "leicester", "liverpool", "reading", "newcastle upon tyne",
+  "ipswich", "swindon"
+]
+,
+  jv: [
+  "tulsa", "allentown", "riverside", "albuquerque", "new york", "charleston",
+  "newark", "fargo", "san antonio", "philadelphia", "asheville", "orlando",
+  "ithaca", "denver", "memphis", "el paso", "gainesville", "tucson",
+  "austin", "minneapolis", "louisville", "charlottesville", "miami",
+  "portland", "seattle", "columbus", "wilmington", "knoxville", "madison",
+  "fresno", "detroit", "irvine", "chicago", "salt lake city", "fort collins",
+  "milwaukee", "springfield", "fort worth", "palo alto", "omaha"
+]
+,
+  kristian: [
+  "nice", "lille", "turin", "nantes", "lausanne", "brisbane", "bremen",
+  "antwerp", "odense", "rennes", "bordeaux", "zurich", "brussels",
+  "lyon", "toulouse", "malmö", "genoa", "perth", "gothenburg",
+  "münster", "alicante", "graz", "cork", "cologne", "porto", "strasbourg",
+  "dresden", "melbourne", "aarhus", "geneva", "hannover", "barcelona",
+  "palma de mallorca", "luxembourg", "basel", "bielefeld", "nuremberg",
+  "sydney", "leipzig", "bonn"
+]
+,
+  eugene: [
+  "adelaide", "gold coast", "canberra", "auckland", "wollongong",
+  "tokyo", "nagoya", "fukuoka", "sapporo", "austin", "palo alto",
+  "chicago", "hobart", "singapore", "kyoto", "geelong", "incheon",
+  "newark", "omaha", "wilmington", "fargo", "san antonio",
+  "philadelphia", "yokohama", "asheville", "orlando", "fort collins",
+  "townsville", "osaka", "wellington", "miami", "christchurch",
+  "amsterdam", "portland", "ithaca", "tauranga", "busan", "seoul", "denver",
+  "oshawa"
+]
+,
+  daisy: [
+  "buffalo", "brooklyn", "durham", "kansas city", "santa fe", "boulder",
+  "sacramento", "long beach", "oakland", "las vegas", "milwaukee", "charlotte",
+  "jacksonville", "memphis", "raleigh", "new orleans", "oklahoma city",
+  "louisville", "fort worth", "el paso", "fresno", "tulsa", "allentown",
+  "knoxville", "springfield", "gainesville", "columbus", "minneapolis",
+  "riverside", "seattle", "albuquerque", "charlottesville", "tucson",
+  "irvine", "new york", "charleston", "madison", "salt lake city", "phoenix",
+  "detroit"
+]
+,
+  ejhay: [
+  "rotterdam", "brampton", "paris", "vaughan", "helsinki", "burnaby",
+  "copenhagen", "quebec city", "regina", "burlington", "greater sudbury",
+  "munich", "milan", "stockholm", "düsseldorf", "oslo", "dublin", "lisbon",
+  "dortmund", "calgary", "edmonton", "markham", "halifax", "madrid",
+  "mississauga", "hamilton", "saguenay", "winnipeg", "rome", "frankfurt",
+  "hamburg", "windsor", "berlin", "ottawa", "abbotsford", "kelowna",
+  "coquitlam", "stuttgart", "surrey", "vienna"
+]
 
-  <script>
-    function generateOutput() {
-      const input = document.getElementById("inputText").value.trim();
-      const output = document.getElementById("outputSections");
-      output.innerHTML = "";
+};
+	
+  let currentUser = '';
+  let currentCities = [];
 
-      let currentCity = null;
-      let messages = [];
+  function login() {
+    const selectedUser = document.getElementById('userDropdown').value;
+    const messageBox = document.getElementById('login-message');
+    const inputBox = document.getElementById('input-box');
+    const loginBox = document.getElementById('login-box');
+    const inputFields = document.getElementById('inputFields');
+    const welcomeUser = document.getElementById('welcome-user');
+    const submitMessage = document.getElementById('submit-message');
+    const outputsDiv = document.getElementById('outputs');
 
-      function renderCityBlock(city, messages) {
-        const sectionDiv = document.createElement("div");
-        sectionDiv.className = "output";
+    if (selectedUser) {
+      currentUser = selectedUser;
+      currentCities = userCities[currentUser.toLowerCase()] || [];
+      messageBox.innerText = '';
+      submitMessage.innerText = '';
+      outputsDiv.style.display = 'none';
+      outputsDiv.innerText = '';
 
-        const cityTitle = document.createElement("div");
-        cityTitle.className = "city-title";
-        cityTitle.textContent = city.toUpperCase() + " ▼";
+      loginBox.style.display = 'none';
+      inputBox.style.display = 'block';
+      welcomeUser.innerText = `Welcome, ${currentUser}!`;
 
-        const messageContainer = document.createElement("div");
-        messageContainer.className = "message-container";
+      inputFields.innerHTML = '';
 
-        messages.slice(0, 11).forEach((line, i) => {
-          const lineDiv = document.createElement("div");
-          lineDiv.className = "line-container";
-
-          const copyBtn = document.createElement("button");
-          copyBtn.className = "copy-btn";
-          copyBtn.textContent = `Copy ${i + 1}`;
-          copyBtn.onclick = () => {
-            navigator.clipboard.writeText(line);
-            copyBtn.textContent = "Copied!";
-            setTimeout(() => copyBtn.textContent = `Copy ${i + 1}`, 1000);
-          };
-
-          const textSpan = document.createElement("span");
-          textSpan.className = "line-text";
-          textSpan.textContent = line;
-
-          lineDiv.appendChild(copyBtn);
-          lineDiv.appendChild(textSpan);
-          messageContainer.appendChild(lineDiv);
-        });
-
-        cityTitle.onclick = () => {
-          const collapsed = messageContainer.classList.toggle("collapsed");
-          cityTitle.textContent = city.toUpperCase() + (collapsed ? " ▼" : " ▲");
-        };
-
-        sectionDiv.appendChild(cityTitle);
-        sectionDiv.appendChild(messageContainer);
-        output.appendChild(sectionDiv);
+      // Create 10 empty inputs for user to type sentences
+      for (let i = 1; i <= 10; i++) {
+        const input = document.createElement('textarea');
+        input.rows = 2;
+        input.style.marginBottom = '10px';
+        input.name = `sentence_${i}`;
+        input.placeholder = `Enter Caption #${i}`;
+        inputFields.appendChild(input);
       }
+    } else {
+      messageBox.style.color = 'red';
+      messageBox.innerText = 'Please select your name to log in.';
+    }
+  }
 
-      const lines = input.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
-      for (const line of lines) {
-        if (line.endsWith(":")) {
-          if (currentCity && messages.length > 0) {
-            renderCityBlock(currentCity, messages);
-          }
-          currentCity = line.replace(":", "").trim();
-          messages = [];
-        } else if (currentCity) {
-          messages.push(line);
-        }
-      }
+  function submitInputs() {
+    const inputs = document.querySelectorAll('#inputFields textarea');
+    const values = Array.from(inputs).map(input => input.value.trim());
+    const allFilled = values.every(val => val !== '');
+    const message = document.getElementById('submit-message');
+    const outputsDiv = document.getElementById('outputs');
 
-      if (currentCity && messages.length > 0) {
-        renderCityBlock(currentCity, messages);
-      }
-
-      // Auto-collapse for mobile
-      if (window.innerWidth <= 768) {
-        document.querySelectorAll(".message-container").forEach(mc => mc.classList.add("collapsed"));
-        document.querySelectorAll(".city-title").forEach(ct => {
-          const cityName = ct.textContent.replace(" ▲", "").replace(" ▼", "");
-          ct.textContent = cityName + " ▼";
-        });
-      }
+    if (!allFilled) {
+      message.style.color = 'red';
+      message.innerText = 'Please fill in all 10 sentences before submitting.';
+      outputsDiv.style.display = 'none';
+      outputsDiv.innerText = '';
+      return;
     }
 
-    // Dark mode toggle
-    const toggleBtn = document.getElementById("toggleDarkMode");
-    const body = document.body;
+    message.style.color = 'green';
+    message.innerText = `Thank you, ${currentUser}. Here are your 30 outputs:\n`;
 
-    toggleBtn.addEventListener("click", () => {
-      body.classList.toggle("dark-mode");
-      const dark = body.classList.contains("dark-mode");
-      toggleBtn.textContent = dark ? "☀️ Light Mode" : "🌙 Dark Mode";
-      localStorage.setItem("darkMode", dark);
+    // Build output text
+    let outputText = '';
+    currentCities.forEach(city => {
+      outputText += `${city.charAt(0).toUpperCase() + city.slice(1)}:\n`;
+      values.forEach(sentence => {
+        // Replace all occurrences of "city" (case insensitive) with city name
+        const replaced = sentence.replace(/city/gi, city);
+        outputText += replaced + '\n';
+      });
+      outputText += '\n';
     });
 
-    if (localStorage.getItem("darkMode") === "true") {
-      body.classList.add("dark-mode");
-      toggleBtn.textContent = "☀️ Light Mode";
-    }
+    outputsDiv.style.display = 'block';
+    outputsDiv.innerText = outputText.trim();
+  }
+</script>
 
-    // Ctrl+Enter to generate
-    document.getElementById("inputText").addEventListener("keydown", function (e) {
-      if (e.ctrlKey && e.key === "Enter") {
-        generateOutput();
-      }
-    });
-  </script>
 </body>
 </html>
