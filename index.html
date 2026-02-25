@@ -1,329 +1,306 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Custom Sentences with City Replacement</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLICKABOLS</title>
+
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f0f0f0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    flex-direction: column;
-    padding: 20px;
-  }
-  input, textarea, select, button {
-  width: 100%;
-  max-width: 600px;
-  box-sizing: border-box;
-  margin: 8px 0;
+body{
+    font-family: Arial;
+    background:#111;
+    color:#eee;
+    display:flex;
+    justify-content:center;
+    padding:40px 15px;
 }
-  .box {
-    background: white;
-    padding: 30px 40px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    text-align: center;
-    max-width: 600px;
-    margin-bottom: 20px;
-  }
-  #input-box {
-    display: none;
-  }
-  select, input[type="submit"], input[type="text"], textarea {
-    padding: 10px;
-    margin: 10px 0;
-    width: 90%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-    font-size: 16px;
-  }
-  input[type="submit"] {
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  input[type="submit"]:hover {
-    background-color: #0056b3;
-  }
-  .message {
-    margin-top: 15px;
-    font-weight: 600;
-  }
-  #inputFields input {
-    margin-bottom: 8px;
-  }
-  #input-box h2 {
-    margin-bottom: 20px;
-  }
-  #outputs {
-    background: white;
-    padding: 20px 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.1);
-    max-width: 600px;
-    white-space: pre-wrap;
-    text-align: left;
-    overflow-x: auto;
-  }
+
+.container{
+    width:100%;
+    max-width:900px;
+    background:#1e1e1e;
+    padding:30px;
+    border-radius:28px;
+}
+
+h2{
+    text-align:center;
+    margin-bottom:5px;
+}
+
+#mainUsername{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:15px;
+    text-align:left;
+}
+
+.top-info{
+    text-align:center;
+    margin-bottom:25px;
+    font-size:15px;
+}
+
+.top-info div{
+    margin:3px 0;
+}
+
+.row{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    margin-top:12px;
+}
+
+.row.posts{
+    margin-top:30px;
+}
+
+.output-btn{
+    padding:10px 18px;
+    border:none;
+    border-radius:16px;
+    background:#2f2f2f;
+    color:white;
+    cursor:pointer;
+    font-size:14px;
+    transition:0.2s ease;
+}
+
+.output-btn:hover{
+    background:#3d3d3d;
+}
+
+.output-btn.active{
+    background:#1b3f7a;
+}
+
+.output-btn.duplicate{
+    background:#7a1b1b;
+}
+
+textarea{
+    width:100%;
+    height:110px;
+    margin-top:8px;
+    padding:12px;
+    border-radius:18px;
+    border:none;
+    background:#2a2a2a;
+    color:white;
+    resize:none;
+}
+
+.generate-btn{
+    width:100%;
+    padding:14px;
+    margin-top:20px;
+    border:none;
+    border-radius:18px;
+    background:#444;
+    color:white;
+    font-size:15px;
+    cursor:pointer;
+}
+
+.section{ margin-top:25px; }
 </style>
 </head>
+
 <body>
+<div class="container">
 
-<div id="login-box" class="box">
-  <h2>Login</h2>
-  <select id="userDropdown">
-    <option value="">-- Select your name --</option>
-    <option>Robyn</option>
-    <option>Ryu</option>
-    <option>Cleigh</option>
-    <option>Red</option>
-    <option>Sai</option>
-    <option>Kyle</option>
-    <option>Danielle</option>
-    <option>Dex</option>
-    <option>Cyril</option>
-    <option>Glenneth</option>
-    <option>JV</option>
-    <option>Kristian</option>
-    <option>Eugene</option>
-    <option>Daisy</option>
-    <option>Ejhay</option>
-  </select>
-  <input type="submit" value="Log In" onclick="login()" />
-  <div id="login-message" class="message"></div>
+<h2>CLICKA BY RB</h2>
+<div id="mainUsername"></div>
+
+<div class="top-info">
+    <div id="modelName"></div>
+    <div id="picLocation"></div>
+    <div id="proxyOutput"></div>
 </div>
 
-<div id="input-box" class="box">
-  <h2 id="welcome-user">Welcome!</h2>
-  <p>Enter your 10 Captions.</p>
-  <div id="inputFields"></div>
-  <input type="submit" value="Submit" onclick="submitInputs()" />
-  <div id="submit-message" class="message"></div>
+<div id="output"></div>
+
+<div class="section">
+<h3>Bio / Repost / Account Row Paste</h3>
+<textarea id="repost"></textarea>
 </div>
 
-<div id="outputs" style="display:none;"></div>
+<div class="section">
+<h3>Caption</h3>
+<textarea id="captions"></textarea>
+</div>
+
+<div class="section">
+<h3>Topic</h3>
+<textarea id="topics"></textarea>
+</div>
+
+<div class="section">
+<h3>Pics</h3>
+<textarea id="pics"></textarea>
+</div>
+
+<button class="generate-btn" onclick="generate()">Generate Buttons</button>
+
+</div>
 
 <script>
-  // User cities mapping (lowercase keys)
- const userCities = {
-  robyn: [
-    "geelong", "yokohama", "brisbane", "townsville", "osaka",
-    "seoul", "wellington", "christchurch", "amsterdam", "tauranga",
-    "busan", "nice", "lille", "turin", "lausanne",
-    "melbourne", "bremen", "antwerp", "odense", "rennes",
-    "bordeaux", "zurich", "brussels", "lyon", "toulouse",
-    "malmö", "genoa", "sydney", "perth", "gothenburg",
-    "münster", "alicante", "graz", "cork", "porto",
-    "nuremberg", "bielefeld", "cologne", "nantes"
-  ],
-  sai: [
-    "strasbourg", "dresden", "aarhus", "geneva", "hannover",
-    "barcelona", "leipzig", "palma de mallorca", "bonn", "luxembourg",
-    "basel", "canada", "australia", "new zealand", "japan",
-    "korea", "scotland", "ireland", "england", "wales",
-    "northern ireland", "the netherlands", "norway", "france", "portugal",
-    "finland", "spain", "denmark", "sweden", "germany",
-    "italy", "austria", "belgium", "switzerland"
-  ],
-  ryu: ["seoul", "osaka", "bangkok"],
- cleigh: [
-  "boston", "san francisco", "virginia beach", "atlanta", "houston", "dallas",
-  "des moines", "bridgeport", "cincinnati", "berkeley", "colorado springs", "pasadena",
-  "brooklyn", "kansas city", "sacramento", "oakland", "nashville", "boulder",
-  "long beach", "las vegas", "tampa", "washington", "durham", "phoenix",
-  "charlotte", "new orleans", "oklahoma city", "toronto", "pittsburgh", "sioux falls",
-  "san jose", "richmond", "baltimore", "wichita", "buffalo", "santa fe",
-  "jacksonville", "raleigh", "los angeles", "ann arbor"
-],
-  red: [
-  "massachusetts", "california", "texas", "florida", "pennsylvania", "minnesota",
-  "kentucky", "colorado", "kansas", "illinois", "virginia", "georgia",
-  "tennessee", "wisconsin", "ohio", "delaware", "iowa", "missouri",
-  "ontario", "maryland", "south dakota", "connecticut", "indiana",
-  "new jersey", "nebraska", "north dakota", "oregon", "new mexico",
-  "oklahoma", "arizona", "utah", "louisiana", "nevada", "district columbia",
-  "british columbia", "manitoba", "nova scotia", "saskatchewan", "michigan",
-  "alberta"
-]
-,
-  kyle: [
-  "rotterdam", "oshawa", "paris", "vaughan", "burnaby", "copenhagen",
-  "mississauga", "regina", "burlington", "greater sudbury", "coquitlam",
-  "kelowna", "munich", "milan", "stockholm", "düsseldorf", "oslo", "dublin",
-  "lisbon", "dortmund", "calgary", "edmonton", "markham", "halifax", "madrid",
-  "quebec city", "hamilton", "saguenay", "surrey", "frankfurt", "abbotsford",
-  "rome", "vienna", "winnipeg", "hamburg", "stuttgart", "windsor", "berlin",
-  "ottawa", "helsinki"
-]
-,
-  danielle: [
-  "texas", "florida", "pennsylvania", "colorado", "illinois", "georgia", "tennessee",
-  "delaware", "iowa", "missouri", "maryland", "connecticut", "oregon", "oklahoma",
-  "arizona", "utah", "nevada", "manitoba", "nova scotia", "alberta", "north dakota",
-  "ohio", "indiana", "nebraska", "louisiana", "new mexico", "saskatchewan",
-  "massachusetts", "virginia", "wisconsin", "ontario", "south dakota", "british columbia",
-  "kansas", "minnesota", "michigan", "kentucky", "california", "new jersey", "district columbia"
-],
-  dex: ["moscow", "dubai", "cairo"],
-  cyril: [
-  "belfast", "southampton", "milton keynes", "northampton", "vancouver",
-  "barrie", "derby", "liverpool", "reading", "newcastle upon tyne",
-  "ipswich", "swindon", "brighton and hove", "coventry", "aberdeen",
-  "sunderland", "cambridge", "leicester", "bristol", "london", "norwich",
-  "brampton", "wolverhampton", "glasgow", "leeds", "sheffield", "swansea",
-  "plymouth", "portsmouth", "bolton", "oxford", "peterborough", "nottingham",
-  "birmingham", "cardiff", "stoke-on-trent", "bradford", "edinburgh",
-  "manchester", "montreal"
-]
-,
-  glenneth: [
-  "brighton and hove", "glasgow", "manchester", "bristol", "london",
-  "edinburgh", "leeds", "sheffield", "nottingham", "coventry",
-  "belfast", "swansea", "aberdeen", "bradford", "plymouth",
-  "southampton", "milton keynes", "portsmouth", "birmingham",
-  "norwich", "northampton", "wolverhampton", "bolton", "sunderland",
-  "oxford", "peterborough", "vancouver", "cardiff", "cambridge",
-  "toronto", "montreal", "barrie", "derby", "stoke-on-trent",
-  "leicester", "liverpool", "reading", "newcastle upon tyne",
-  "ipswich", "swindon"
-]
-,
-  jv: [
-  "tulsa", "allentown", "riverside", "albuquerque", "new york", "charleston",
-  "newark", "fargo", "san antonio", "philadelphia", "asheville", "orlando",
-  "ithaca", "denver", "memphis", "el paso", "gainesville", "tucson",
-  "austin", "minneapolis", "louisville", "charlottesville", "miami",
-  "portland", "seattle", "columbus", "wilmington", "knoxville", "madison",
-  "fresno", "detroit", "irvine", "chicago", "salt lake city", "fort collins",
-  "milwaukee", "springfield", "fort worth", "palo alto", "omaha"
-]
-,
-  kristian: [
-  "nice", "lille", "turin", "nantes", "lausanne", "brisbane", "bremen",
-  "antwerp", "odense", "rennes", "bordeaux", "zurich", "brussels",
-  "lyon", "toulouse", "malmö", "genoa", "perth", "gothenburg",
-  "münster", "alicante", "graz", "cork", "cologne", "porto", "strasbourg",
-  "dresden", "melbourne", "aarhus", "geneva", "hannover", "barcelona",
-  "palma de mallorca", "luxembourg", "basel", "bielefeld", "nuremberg",
-  "sydney", "leipzig", "bonn"
-]
-,
-  eugene: [
-  "adelaide", "gold coast", "canberra", "auckland", "wollongong",
-  "tokyo", "nagoya", "fukuoka", "sapporo", "austin", "palo alto",
-  "chicago", "hobart", "singapore", "kyoto", "geelong", "incheon",
-  "newark", "omaha", "wilmington", "fargo", "san antonio",
-  "philadelphia", "yokohama", "asheville", "orlando", "fort collins",
-  "townsville", "osaka", "wellington", "miami", "christchurch",
-  "amsterdam", "portland", "ithaca", "tauranga", "busan", "seoul", "denver",
-  "oshawa"
-]
-,
-  daisy: [
-  "buffalo", "brooklyn", "durham", "kansas city", "santa fe", "boulder",
-  "sacramento", "long beach", "oakland", "las vegas", "milwaukee", "charlotte",
-  "jacksonville", "memphis", "raleigh", "new orleans", "oklahoma city",
-  "louisville", "fort worth", "el paso", "fresno", "tulsa", "allentown",
-  "knoxville", "springfield", "gainesville", "columbus", "minneapolis",
-  "riverside", "seattle", "albuquerque", "charlottesville", "tucson",
-  "irvine", "new york", "charleston", "madison", "salt lake city", "phoenix",
-  "detroit"
-]
-,
-  ejhay: [
-  "rotterdam", "brampton", "paris", "vaughan", "helsinki", "burnaby",
-  "copenhagen", "quebec city", "regina", "burlington", "greater sudbury",
-  "munich", "milan", "stockholm", "düsseldorf", "oslo", "dublin", "lisbon",
-  "dortmund", "calgary", "edmonton", "markham", "halifax", "madrid",
-  "mississauga", "hamilton", "saguenay", "winnipeg", "rome", "frankfurt",
-  "hamburg", "windsor", "berlin", "ottawa", "abbotsford", "kelowna",
-  "coquitlam", "stuttgart", "surrey", "vienna"
-]
 
-};
-	
-  let currentUser = '';
-  let currentCities = [];
+let activeButton=null;
 
-  function login() {
-    const selectedUser = document.getElementById('userDropdown').value;
-    const messageBox = document.getElementById('login-message');
-    const inputBox = document.getElementById('input-box');
-    const loginBox = document.getElementById('login-box');
-    const inputFields = document.getElementById('inputFields');
-    const welcomeUser = document.getElementById('welcome-user');
-    const submitMessage = document.getElementById('submit-message');
-    const outputsDiv = document.getElementById('outputs');
+function cleanLines(text){
+    return text.split("\n")
+        .map(l=>l.trim())
+        .filter(l=>l && !l.includes(".txt"));
+}
 
-    if (selectedUser) {
-      currentUser = selectedUser;
-      currentCities = userCities[currentUser.toLowerCase()] || [];
-      messageBox.innerText = '';
-      submitMessage.innerText = '';
-      outputsDiv.style.display = 'none';
-      outputsDiv.innerText = '';
+function formatBio(text){
+    const parts=text.trim().split(/\s+/);
+    if(parts.length<3) return text;
+    return parts[0]+" "+parts[1]+"\n"+parts.slice(2).join(" ");
+}
 
-      loginBox.style.display = 'none';
-      inputBox.style.display = 'block';
-      welcomeUser.innerText = `Welcome, ${currentUser}!`;
+function extractPicInfo(link){
+    try{
+        const parts=link.split("/");
+        const nameRaw=parts[3]||"";
+        const name=nameRaw.split(" ")[0];
 
-      inputFields.innerHTML = '';
+        const file=parts[parts.length-1];
+        const locMatch=file.match(/_([a-z-]+)_\d+\.jpg/i);
+        const location=locMatch?
+            locMatch[1].charAt(0).toUpperCase()+locMatch[1].slice(1):"";
 
-      // Create 10 empty inputs for user to type sentences
-      for (let i = 1; i <= 10; i++) {
-        const input = document.createElement('textarea');
-        input.rows = 2;
-        input.style.marginBottom = '10px';
-        input.name = `sentence_${i}`;
-        input.placeholder = `Enter Caption #${i}`;
-        inputFields.appendChild(input);
-      }
-    } else {
-      messageBox.style.color = 'red';
-      messageBox.innerText = 'Please select your name to log in.';
+        return {
+            name:name?name.charAt(0).toUpperCase()+name.slice(1):"",
+            location:location
+        };
+    }catch{
+        return {name:"",location:""};
     }
-  }
+}
 
-  function submitInputs() {
-    const inputs = document.querySelectorAll('#inputFields textarea');
-    const values = Array.from(inputs).map(input => input.value.trim());
-    const allFilled = values.every(val => val !== '');
-    const message = document.getElementById('submit-message');
-    const outputsDiv = document.getElementById('outputs');
+function extractLocation(text){
+    const match=
+        text.match(/moved to\s+([a-zA-Z-]+)/i)||
+        text.match(/from\s+📍?\s*([a-zA-Z-]+)/i)||
+        text.match(/^([a-zA-Z-]+)\s+📍/i);
 
-    if (!allFilled) {
-      message.style.color = 'red';
-      message.innerText = 'Please fill in all 10 sentences before submitting.';
-      outputsDiv.style.display = 'none';
-      outputsDiv.innerText = '';
-      return;
+    if(match){
+        return match[1].charAt(0).toUpperCase()+match[1].slice(1);
+    }
+    return "Post";
+}
+
+function createCopyButton(label,value){
+    const btn=document.createElement("button");
+    btn.className="output-btn";
+    btn.innerText=label;
+    btn.dataset.value=value;
+
+    btn.onclick=()=>{
+        navigator.clipboard.writeText(value);
+        if(activeButton) activeButton.classList.remove("active");
+        btn.classList.add("active");
+        activeButton=btn;
+    };
+    return btn;
+}
+
+function generate(){
+
+    const output=document.getElementById("output");
+    output.innerHTML="";
+    document.getElementById("modelName").innerText="";
+    document.getElementById("picLocation").innerText="";
+    document.getElementById("proxyOutput").innerText="";
+    document.getElementById("mainUsername").innerText="";
+
+    const raw=document.getElementById("repost").value.trim();
+
+    let repostAcc="", repostCaption="", username="", email="", proxy="", bioRaw="";
+
+    if(raw){
+        const parts=raw.split("\t");
+
+        username=parts[0]||"";
+        email=parts.find(p=>p.includes("@"))||"";
+        proxy=parts[6]||"";
+
+        bioRaw=parts.find(p=>p.match(/^\d+\s/))||"";
+        const bioIndex=parts.indexOf(bioRaw);
+
+        repostCaption=parts[bioIndex+1]||"";
+        repostAcc=parts[bioIndex+2]||"";
+
+        document.getElementById("mainUsername").innerText=username;
+        document.getElementById("proxyOutput").innerText="Proxy: "+proxy;
     }
 
-    message.style.color = 'green';
-    message.innerText = `Thank you, ${currentUser}. Here are your 30 outputs:\n`;
+    /* ROW 1 – PICS */
+    const pics=cleanLines(document.getElementById("pics").value);
+    const picRow=document.createElement("div");
+    picRow.className="row";
 
-    // Build output text
-    let outputText = '';
-    currentCities.forEach(city => {
-      outputText += `${city.charAt(0).toUpperCase() + city.slice(1)}:\n`;
-      values.forEach(sentence => {
-        // Replace all occurrences of "city" (case insensitive) with city name
-        const replaced = sentence.replace(/city/gi, city);
-        outputText += replaced + '\n';
-      });
-      outputText += '\n';
+    pics.slice(0,3).forEach((p,i)=>{
+        picRow.appendChild(createCopyButton("Pic "+(i+1),p));
     });
 
-    outputsDiv.style.display = 'block';
-    outputsDiv.innerText = outputText.trim();
-  }
-</script>
+    output.appendChild(picRow);
 
+    if(pics[0]){
+        const info=extractPicInfo(pics[0]);
+        document.getElementById("modelName").innerText="Model: "+info.name;
+        document.getElementById("picLocation").innerText="Location: "+info.location;
+    }
+
+    /* ROW 2 – EMAIL + USERNAME + BIO */
+    const row2=document.createElement("div");
+    row2.className="row";
+
+    if(email) row2.appendChild(createCopyButton("Email",email));
+    if(username) row2.appendChild(createCopyButton("Username",username));
+
+    if(bioRaw){
+        const formattedBio=formatBio(bioRaw);
+        row2.appendChild(createCopyButton("Bio",formattedBio));
+    }
+
+    output.appendChild(row2);
+
+    /* ROW 3 – POSTS */
+    const caps=cleanLines(document.getElementById("captions").value);
+    const postRow=document.createElement("div");
+    postRow.className="row posts";
+
+    caps.slice(0,3).forEach((cap,i)=>{
+        postRow.appendChild(createCopyButton("Post "+(i+1),cap));
+    });
+
+    output.appendChild(postRow);
+
+    /* ROW 4 – TOPICS */
+    const topics=cleanLines(document.getElementById("topics").value);
+    const topicRow=document.createElement("div");
+    topicRow.className="row";
+
+    topics.slice(0,3).forEach((topic,i)=>{
+        topicRow.appendChild(createCopyButton("Topic "+(i+1),topic));
+    });
+
+    output.appendChild(topicRow);
+
+    /* ROW 5 – REPOST */
+    const repostRow=document.createElement("div");
+    repostRow.className="row";
+
+    if(repostAcc) repostRow.appendChild(createCopyButton("Repost Acc",repostAcc));
+    if(repostCaption) repostRow.appendChild(createCopyButton("Repost Caption",repostCaption));
+
+    output.appendChild(repostRow);
+}
+
+</script>
 </body>
 </html>
