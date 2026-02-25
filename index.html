@@ -181,23 +181,17 @@ function extractPicInfo(link){
     }
 }
 
-function extractLocation(text){
-    const match=
-        text.match(/moved to\s+([a-zA-Z-]+)/i)||
-        text.match(/from\s+📍?\s*([a-zA-Z-]+)/i)||
-        text.match(/^([a-zA-Z-]+)\s+📍/i);
-
-    if(match){
-        return match[1].charAt(0).toUpperCase()+match[1].slice(1);
-    }
-    return "Post";
-}
-
-function createCopyButton(label,value){
+function createCopyButton(label,value,allValues){
     const btn=document.createElement("button");
     btn.className="output-btn";
     btn.innerText=label;
     btn.dataset.value=value;
+
+    // DUPLICATE CHECK
+    const duplicates=allValues.filter(v=>v===value);
+    if(duplicates.length>1){
+        btn.classList.add("duplicate");
+    }
 
     btn.onclick=()=>{
         navigator.clipboard.writeText(value);
@@ -238,13 +232,27 @@ function generate(){
         document.getElementById("proxyOutput").innerText="Proxy: "+proxy;
     }
 
-    /* ROW 1 – PICS */
     const pics=cleanLines(document.getElementById("pics").value);
+    const caps=cleanLines(document.getElementById("captions").value);
+    const topics=cleanLines(document.getElementById("topics").value);
+
+    // Collect all values for duplicate detection
+    const allValues=[
+        ...pics.slice(0,3),
+        ...caps.slice(0,3),
+        ...topics.slice(0,3),
+        repostAcc,
+        repostCaption,
+        email,
+        username
+    ].filter(v=>v);
+
+    /* ROW 1 – PICS */
     const picRow=document.createElement("div");
     picRow.className="row";
 
     pics.slice(0,3).forEach((p,i)=>{
-        picRow.appendChild(createCopyButton("Pic "+(i+1),p));
+        picRow.appendChild(createCopyButton("Pic "+(i+1),p,allValues));
     });
 
     output.appendChild(picRow);
@@ -255,38 +263,51 @@ function generate(){
         document.getElementById("picLocation").innerText="Location: "+info.location;
     }
 
-    /* ROW 2 – EMAIL + USERNAME + BIO */
+    /* ROW 2 – EMAIL + USERNAME + PASS + BIO */
     const row2=document.createElement("div");
     row2.className="row";
 
-    if(email) row2.appendChild(createCopyButton("Email",email));
-    if(username) row2.appendChild(createCopyButton("Username",username));
+    if(email) row2.appendChild(createCopyButton("Email",email,allValues));
+
+    if(username){
+        row2.appendChild(createCopyButton("Username",username,allValues));
+
+        // PASS BUTTON
+        const passBtn=document.createElement("button");
+        passBtn.className="output-btn";
+        passBtn.innerText="Pass";
+        passBtn.onclick=()=>{
+            navigator.clipboard.writeText("Ascension2025!");
+            if(activeButton) activeButton.classList.remove("active");
+            passBtn.classList.add("active");
+            activeButton=passBtn;
+        };
+        row2.appendChild(passBtn);
+    }
 
     if(bioRaw){
         const formattedBio=formatBio(bioRaw);
-        row2.appendChild(createCopyButton("Bio",formattedBio));
+        row2.appendChild(createCopyButton("Bio",formattedBio,allValues));
     }
 
     output.appendChild(row2);
 
     /* ROW 3 – POSTS */
-    const caps=cleanLines(document.getElementById("captions").value);
     const postRow=document.createElement("div");
     postRow.className="row posts";
 
     caps.slice(0,3).forEach((cap,i)=>{
-        postRow.appendChild(createCopyButton("Post "+(i+1),cap));
+        postRow.appendChild(createCopyButton("Post "+(i+1),cap,allValues));
     });
 
     output.appendChild(postRow);
 
     /* ROW 4 – TOPICS */
-    const topics=cleanLines(document.getElementById("topics").value);
     const topicRow=document.createElement("div");
     topicRow.className="row";
 
     topics.slice(0,3).forEach((topic,i)=>{
-        topicRow.appendChild(createCopyButton("Topic "+(i+1),topic));
+        topicRow.appendChild(createCopyButton("Topic "+(i+1),topic,allValues));
     });
 
     output.appendChild(topicRow);
@@ -295,8 +316,8 @@ function generate(){
     const repostRow=document.createElement("div");
     repostRow.className="row";
 
-    if(repostAcc) repostRow.appendChild(createCopyButton("Repost Acc",repostAcc));
-    if(repostCaption) repostRow.appendChild(createCopyButton("Repost Caption",repostCaption));
+    if(repostAcc) repostRow.appendChild(createCopyButton("Repost Acc",repostAcc,allValues));
+    if(repostCaption) repostRow.appendChild(createCopyButton("Repost Caption",repostCaption,allValues));
 
     output.appendChild(repostRow);
 }
