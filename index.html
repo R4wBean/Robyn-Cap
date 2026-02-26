@@ -22,26 +22,32 @@ body{
     border-radius:28px;
 }
 
-h2{
+.title-main{
     text-align:center;
-    margin-bottom:5px;
+    font-family:"Montserrat","Segoe UI",sans-serif;
+    font-weight:900;
+    font-size:32px;
+    text-shadow:
+        0 0 8px rgba(255,255,255,0.5),
+        1px 1px 0 #000,
+        2px 2px 0 #444,
+        4px 4px 10px rgba(0,0,0,0.6);
 }
 
-#mainUsername{
-    font-size:18px;
-    font-weight:bold;
-    margin-bottom:15px;
-    text-align:left;
+.title-sub{
+    text-align:center;
+    font-size:13px;
+    opacity:0.7;
+    margin-top:-30px;
+    margin-bottom:12px;
 }
 
 .top-info{
-    text-align:center;
+    text-align:flex;
     margin-bottom:25px;
     font-size:15px;
-}
-
-.top-info div{
-    margin:3px 0;
+    font-family:"Montserrat","Segoe UI",sans-serif;
+    font-weight:600;
 }
 
 .row{
@@ -50,10 +56,6 @@ h2{
     justify-content:center;
     gap:10px;
     margin-top:12px;
-}
-
-.row.posts{
-    margin-top:30px;
 }
 
 .output-btn{
@@ -71,10 +73,12 @@ h2{
     background:#3d3d3d;
 }
 
-.output-btn.active{
-    background:#1b3f7a;
-}
 
+.output-btn.active{
+    background:#29F8FF;
+    color:#000;
+    font-weight:900;
+}
 .output-btn.duplicate{
     background:#7a1b1b;
 }
@@ -96,11 +100,21 @@ textarea{
     padding:14px;
     margin-top:20px;
     border:none;
-    border-radius:18px;
+    border-radius:28px;
     background:#444;
     color:white;
     font-size:15px;
     cursor:pointer;
+
+
+
+}
+#mainUsername{
+ text-align:center;
+    color:#29F8FF;
+    font-family:"Montserrat","Segoe UI",sans-serif;
+    font-size:18px;
+    font-weight:700;
 }
 
 .section{ margin-top:25px; }
@@ -108,21 +122,24 @@ textarea{
 </head>
 
 <body>
+
 <div class="container">
 
-<h2>CLICKA BY RB</h2>
+<h2 class="title-main">CLICKA BY RB</h2>
+<div class="title-sub">Creation mode</div>
+
 <div id="mainUsername"></div>
 
 <div class="top-info">
-    <div id="modelName"></div>
-    <div id="picLocation"></div>
-    <div id="proxyOutput"></div>
+<div id="modelOutput"></div>
+<div id="locationOutput"></div>
+<div id="proxyOutput"></div>
 </div>
 
 <div id="output"></div>
 
 <div class="section">
-<h3>Bio / Repost / Account Row Paste</h3>
+<h3>INFO INPUT</h3>
 <textarea id="repost"></textarea>
 </div>
 
@@ -137,7 +154,7 @@ textarea{
 </div>
 
 <div class="section">
-<h3>Pics</h3>
+<h3>Pictures</h3>
 <textarea id="pics"></textarea>
 </div>
 
@@ -169,6 +186,7 @@ function extractPicInfo(link){
 
         const file=parts[parts.length-1];
         const locMatch=file.match(/_([a-z-]+)_\d+\.jpg/i);
+
         const location=locMatch?
             locMatch[1].charAt(0).toUpperCase()+locMatch[1].slice(1):"";
 
@@ -185,9 +203,7 @@ function createCopyButton(label,value,allValues){
     const btn=document.createElement("button");
     btn.className="output-btn";
     btn.innerText=label;
-    btn.dataset.value=value;
 
-    // DUPLICATE CHECK
     const duplicates=allValues.filter(v=>v===value);
     if(duplicates.length>1){
         btn.classList.add("duplicate");
@@ -199,44 +215,79 @@ function createCopyButton(label,value,allValues){
         btn.classList.add("active");
         activeButton=btn;
     };
+
     return btn;
 }
+
+/* ---------- GENERATE ---------- */
 
 function generate(){
 
     const output=document.getElementById("output");
     output.innerHTML="";
-    document.getElementById("modelName").innerText="";
-    document.getElementById("picLocation").innerText="";
-    document.getElementById("proxyOutput").innerText="";
+
     document.getElementById("mainUsername").innerText="";
+    document.getElementById("modelOutput").innerText="";
+    document.getElementById("locationOutput").innerText="";
+    document.getElementById("proxyOutput").innerText="";
 
     const raw=document.getElementById("repost").value.trim();
 
-    let repostAcc="", repostCaption="", username="", email="", proxy="", bioRaw="";
+    let username="", email="", vpn="", model="", location="";
+    let bioRaw="", repostCaption="", repostAcc="";
+    let picModel="", picLocation="";
 
     if(raw){
-        const parts=raw.split("\t");
 
-        username=parts[0]||"";
-        email=parts.find(p=>p.includes("@"))||"";
-        proxy=parts[6]||"";
+        const parts=raw.split("\t").map(p=>p.trim());
 
-        bioRaw=parts.find(p=>p.match(/^\d+\s/))||"";
-        const bioIndex=parts.indexOf(bioRaw);
-
-        repostCaption=parts[bioIndex+1]||"";
-        repostAcc=parts[bioIndex+2]||"";
+        /* Column Mapping */
+        username = parts[0] || "";
+        email = parts[5] || "";
+        vpn = parts[6] || "";
+        model = parts[7] || "";
+        location = parts[9] || "";
+        bioRaw = parts[12] || "";
+        repostCaption = parts[13] || "";
+        repostAcc = parts[14] || "";
 
         document.getElementById("mainUsername").innerText=username;
-        document.getElementById("proxyOutput").innerText="Proxy: "+proxy;
     }
 
     const pics=cleanLines(document.getElementById("pics").value);
     const caps=cleanLines(document.getElementById("captions").value);
     const topics=cleanLines(document.getElementById("topics").value);
 
-    // Collect all values for duplicate detection
+    /* Picture metadata detection */
+    if(pics[0]){
+        const info=extractPicInfo(pics[0]);
+        picModel=info.name;
+        picLocation=info.location;
+    }
+
+    /* ===== Display Logic Fix ===== */
+
+    const finalModelDisplay =
+        model && picModel ?
+        model + "/" + picModel :
+        model || picModel;
+
+    const finalLocationDisplay =
+        location && picLocation ?
+        location + "/" + picLocation :
+        location || picLocation;
+
+    document.getElementById("modelOutput").innerText =
+        "Model: " + (finalModelDisplay || "");
+
+    document.getElementById("locationOutput").innerText =
+        "Location: " + (finalLocationDisplay || "");
+
+    document.getElementById("proxyOutput").innerText =
+        "Proxy: " + (vpn || "");
+
+    /* Duplicate pool */
+
     const allValues=[
         ...pics.slice(0,3),
         ...caps.slice(0,3),
@@ -247,81 +298,83 @@ function generate(){
         username
     ].filter(v=>v);
 
-    /* ROW 1 – PICS */
+    /* ROWS */
+
     const picRow=document.createElement("div");
     picRow.className="row";
 
     pics.slice(0,3).forEach((p,i)=>{
-        picRow.appendChild(createCopyButton("Pic "+(i+1),p,allValues));
+        picRow.appendChild(
+            createCopyButton("Pic "+(i+1),p,allValues)
+        );
     });
 
     output.appendChild(picRow);
 
-    if(pics[0]){
-        const info=extractPicInfo(pics[0]);
-        document.getElementById("modelName").innerText="Model: "+info.name;
-        document.getElementById("picLocation").innerText="Location: "+info.location;
-    }
-
-    /* ROW 2 – EMAIL + USERNAME + PASS + BIO */
     const row2=document.createElement("div");
     row2.className="row";
 
     if(email) row2.appendChild(createCopyButton("Email",email,allValues));
+    if(username) row2.appendChild(createCopyButton("Username",username,allValues));
 
-    if(username){
-        row2.appendChild(createCopyButton("Username",username,allValues));
+    const passBtn=document.createElement("button");
+    passBtn.className="output-btn";
+    passBtn.innerText="Pass";
 
-        // PASS BUTTON
-        const passBtn=document.createElement("button");
-        passBtn.className="output-btn";
-        passBtn.innerText="Pass";
-        passBtn.onclick=()=>{
-            navigator.clipboard.writeText("Ascension2025!");
-            if(activeButton) activeButton.classList.remove("active");
-            passBtn.classList.add("active");
-            activeButton=passBtn;
-        };
-        row2.appendChild(passBtn);
-    }
+    passBtn.onclick=()=>{
+        navigator.clipboard.writeText("Ascension2025!");
+        if(activeButton) activeButton.classList.remove("active");
+        passBtn.classList.add("active");
+        activeButton=passBtn;
+    };
+
+    row2.appendChild(passBtn);
 
     if(bioRaw){
-        const formattedBio=formatBio(bioRaw);
-        row2.appendChild(createCopyButton("Bio",formattedBio,allValues));
+        row2.appendChild(
+            createCopyButton("Bio",formatBio(bioRaw),allValues)
+        );
     }
 
     output.appendChild(row2);
 
-    /* ROW 3 – POSTS */
     const postRow=document.createElement("div");
     postRow.className="row posts";
 
     caps.slice(0,3).forEach((cap,i)=>{
-        postRow.appendChild(createCopyButton("Post "+(i+1),cap,allValues));
+        postRow.appendChild(
+            createCopyButton("Post "+(i+1),cap,allValues)
+        );
     });
 
     output.appendChild(postRow);
 
-    /* ROW 4 – TOPICS */
     const topicRow=document.createElement("div");
     topicRow.className="row";
 
     topics.slice(0,3).forEach((topic,i)=>{
-        topicRow.appendChild(createCopyButton("Topic "+(i+1),topic,allValues));
+        topicRow.appendChild(
+            createCopyButton("Topic "+(i+1),topic,allValues)
+        );
     });
 
     output.appendChild(topicRow);
 
-    /* ROW 5 – REPOST */
     const repostRow=document.createElement("div");
     repostRow.className="row";
 
-    if(repostAcc) repostRow.appendChild(createCopyButton("Repost Acc",repostAcc,allValues));
-    if(repostCaption) repostRow.appendChild(createCopyButton("Repost Caption",repostCaption,allValues));
+    if(repostAcc) repostRow.appendChild(
+        createCopyButton("Repost Acc",repostAcc,allValues)
+    );
+
+    if(repostCaption) repostRow.appendChild(
+        createCopyButton("Repost Caption",repostCaption,allValues)
+    );
 
     output.appendChild(repostRow);
 }
 
 </script>
+
 </body>
 </html>
